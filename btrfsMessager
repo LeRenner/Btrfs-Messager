@@ -1,0 +1,53 @@
+#!/usr/bin/python3
+
+import os
+import subprocess
+import requests
+import json
+
+
+# Set user variables
+home = "/home/user"
+btrfsArray = "/mount/btrfs"
+bot_token = '1111111111:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+bot_chatID = '123456789'
+
+telegramFailFileName = "ErrorSendingTelegramMessage"
+btrfsErrorFileName = "ErrorOnBtrfs"
+
+btrfsErrorMessage = "Error on btrfs!"
+btrfsOkMessage = "No errors on btrfs array"
+
+sendOkMessages = 0
+alsoSpamHome = 1
+
+
+# Set function to send messages on telegram
+def sendMessage(message):
+  send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + message
+  out = requests.get(send_text).json()
+  if not bool(out['ok']):
+    os.system("touch " + home + "/" + telegramFailFileName)
+
+
+# Get status from btrfs array
+os.system("btrfs device stats " + btrfsArray + " >> /tmp/btrfsReadings")
+file = open("/tmp/btrfsReadings", "r").readlines()
+deuRuim = 0
+
+
+# In case of error, send messages
+for linha in file:
+  if (linha[-2] != "0" and deuRuim == 0):
+    deuRuim = 1
+    sendMessage(btrfsErrorMessage)
+
+if (deuRuim and alsoSpamHome):
+  os.system("touch " + home + "/" + btrfsErrorFileName)
+
+if (deuRuim == 0 and sendOkMessages):
+  sendMessage(btrfsOkMessage)
+
+
+# Remove temp btrfs file
+os.system("rm /tmp/btrfsReadings")
