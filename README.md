@@ -14,28 +14,25 @@ Simply clone this script to a directory on your machine, and make crontab run it
 ## Configuration
 On the beguinning of the script, you need to customize certain variables to your needs. Here are their descriptions:
 
-home > The path to your home folder
+    home > The path to your home folder
 
-btrfsArray > The path to your btrfs array
+    btrfsArray > The path to your btrfs array
 
-bot_token > The token from you telegram bot
+    bot_token > The token from you telegram bot
 
-bot_chatID > The ID of your conversation with your bot
+    bot_chatID > The ID of your conversation with your bot
 
+    telegramFailFileName > Name of the file created if the script fails in sending a telegram message
 
-telegramFailFileName > Name of the file created if the script fails in sending a telegram message
+    btrfsErrorFileName > Name of the file created if an error is detected on your btrfs array, and alsoSpamHome = 1
 
-btrfsErrorFileName > Name of the file created if an error is detected on your btrfs array, and alsoSpamHome = 1
+    btrfsErrorMessage > Message sent if an error is detected on your btrfs array
 
+    btrfsOkMessage > Message sent if no error is detected on your btrfs array and sendOkMessage = 1
 
-btrfsErrorMessage > Message sent if an error is detected on your btrfs array
+    sendOkMessages > (Boolean) If the script should message you when no errors were detected
 
-btrfsOkMessage > Message sent if no error is detected on your btrfs array and sendOkMessage = 1
- 
-
-sendOkMessages > (Boolean) If the script should message you when no errors were detected
-
-alsoSpamHome > (Boolean) If the script should create a file on your home when an error is detected, even if a message is succesfully sent on telegram
+    alsoSpamHome > (Boolean) If the script should create a file on your home when an error is detected, even if a message is succesfully sent on telegram
 
 ## Disclaimer
 This script was created for educational purposes and I can not guarantee you it works perfectly. Please use it on your own risk.
