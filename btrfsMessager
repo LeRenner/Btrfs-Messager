@@ -7,7 +7,7 @@ import json
 
 
 # Set user variables
-home = "/home/user"
+home = "/home/user"  #do not add a final "/"
 btrfsArray = "/mount/btrfs"
 bot_token = '1111111111:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
 bot_chatID = '123456789'
