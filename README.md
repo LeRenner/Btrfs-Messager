@@ -1,10 +1,8 @@
 # Btrfs Messager
-This script allows you to periodically check the status of the disks of a btrfs array, and it sends you a message on telegram if it detect any errors.The command it uses to check the disks is
-    btrfs device stats <array>
-It can also send you messages if case of no errors detected, and even create an empty file on your home as an additional warning. The messages are easily customizable to your needs.
+This script allows you to periodically check the status of the disks of a btrfs array, and it sends you a message on telegram if it detect any errors. It can also send you messages in case of no errors detected, and even create an empty file on your home as an additional warning. The messages are easily customizable to your needs.
 
 ## How it works
-This script periodically checks your array disks for errors as mentioned before. In case any were detected, it sends you a message on telegram warning you about that error. If it encounters an error in sending you a message it will create an empty file (you can choose its name) on your home folder to warn you about the erro in sending a message. Optionally, you can configure it to create an empty file on your home every time an error is detected, regardless of if it was successfull in sending you a warning message on telegram.
+This script periodically checks your array disks for errors as mentioned before. In case any were detected, it sends you a message on telegram warning you about that error. If it encounters an error in sending you a message it will create an empty file (you can choose its name) on your home folder to warn you about the error in sending a message. Optionally, you can configure it to create an empty file on your home every time an error is detected, regardless of if it was successfull in sending you a warning message on telegram.
 
 ## Requirements
 You will need a bot on telegram. The process to create one is very simple, and you can find documentation regarding it on
