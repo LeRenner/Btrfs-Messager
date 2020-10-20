@@ -1,53 +1,56 @@
 #!/usr/bin/python3
 
-import os
-import subprocess
 import requests
-import json
+import btrfs
 
 
 # Set user variables
-home = "/home/user"  #do not add a final "/"
-btrfsArray = "/mount/btrfs"
+btrfsArrays = ["/mnt/btrfs_pool", "/mnt/other_btrfs_pool"]
 bot_token = '1111111111:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
 bot_chatID = '123456789'
 
-telegramFailFileName = "ErrorSendingTelegramMessage"
-btrfsErrorFileName = "ErrorOnBtrfs"
+btrfsErrorFilePath = "/home/user/ErrorOnBtrfs"
 
-btrfsErrorMessage = "Error on btrfs!"
 btrfsOkMessage = "No errors on btrfs array"
 
-sendOkMessages = 0
-alsoSpamHome = 1
-
+resetStatsWhenError = False
+sendOkMessages = False
+alsoSpamHome = True
 
 # Set function to send messages on telegram
 def sendMessage(message):
   send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + message
   out = requests.get(send_text).json()
   if not bool(out['ok']):
-    os.system("touch " + home + "/" + telegramFailFileName)
+    print("[btrfs-messager] warning: could not send message!")
 
 
-# Get status from btrfs array
-os.system("btrfs device stats " + btrfsArray + " >> /tmp/btrfsReadings")
-file = open("/tmp/btrfsReadings", "r").readlines()
-deuRuim = 0
+errorMessage = ""
 
+# Look through all filesystems specified above
+try:
+  for fsdir in btrfsArrays:
+    with btrfs.FileSystem(fsdir) as fs:
 
-# In case of error, send messages
-for linha in file:
-  if (linha[-2] != "0" and deuRuim == 0):
-    deuRuim = 1
-    sendMessage(btrfsErrorMessage)
+      # Look through all the devices in the current filesystem and see if any of them have errors
+      for device in fs.devices(): 
+        stats = fs.dev_stats(device.devid, reset=resetStatsWhenError)
 
-if (deuRuim and alsoSpamHome):
-  os.system("touch " + home + "/" + btrfsErrorFileName)
+        # there's probably a better way to do this. There is a `counts` method but all it does is return this info as a dict...
+        if (stats.write_errs      or
+            stats.read_errs       or
+            stats.flush_errs      or
+            stats.generation_errs or
+            stats.corruption_errs):
+          errorMessage += f"Found errors on {fs.dev_info(device.devid).path} (devid {device.devid}) !\n `{str(stats)}`\n\n"
+except PermissionError as e:
+  sendMessage("error: btrfs-messager should be running as root!")
+  print("error: btrfs-messager should be running as root!")
 
-if (deuRuim == 0 and sendOkMessages):
+if errorMessage:
+  sendMessage(errorMessage)
+  if alsoSpamHome:
+    with open(btrfsErrorFilePath, "w") as f:
+      f.write(errorMessage)
+elif sendOkMessages: # why would anyone even want this? lmao
   sendMessage(btrfsOkMessage)
-
-
-# Remove temp btrfs file
-os.system("rm /tmp/btrfsReadings")
