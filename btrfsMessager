@@ -37,10 +37,10 @@ try:
         stats = fs.dev_stats(device.devid, reset=resetStatsWhenError)
 
         # there's probably a better way to do this. There is a `counts` method but all it does is return this info as a dict...
-        if (stats.write_errs      != 0 or
-            stats.read_errs       != 0 or
-            stats.flush_errs      != 0 or
-            stats.generation_errs != 0 or
+        if (stats.write_errs      or
+            stats.read_errs       or
+            stats.flush_errs      or
+            stats.generation_errs or
             stats.corruption_errs):
           errorMessage += f"Found errors on {fs.dev_info(device.devid).path} (devid {device.devid}) !\n `{str(stats)}`\n\n"
 except PermissionError as e:
