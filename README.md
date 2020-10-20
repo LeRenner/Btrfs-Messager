@@ -14,7 +14,7 @@ Simply clone this script to a directory on your machine, and make crontab run it
 ## Configuration
 On the beguinning of the script, you need to customize certain variables to your needs. Here are their descriptions:
 
-    btrfsArray > List with paths to your btrfs arrays
+    btrfsArrays > List with paths to your btrfs arrays
     bot_token > The token from you telegram bot
     bot_chatID > The ID of your conversation with your bot
 
